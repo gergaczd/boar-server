@@ -1,7 +1,7 @@
 'use strict';
 
 
-var hooks = [];
+let hooks = [];
 
 module.exports = {
 

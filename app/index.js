@@ -1,21 +1,21 @@
 'use strict';
 
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var serve = require('koa-static');
-var cors = require('koa-cors');
-var Pug = require('koa-pug');
-var errorHandlerMiddleware = require('./middlewares/error-handler');
-var methodOverride = require('koa-methodoverride');
-var HookMiddlewareFactory = require('./middlewares/hook');
-var bodyparser = require('koa-bodyparser');
-var requestId = require('koa-requestid');
-var ssl = require('koa-ssl');
-var SecurityMiddlewareFactory = require('../lib/security-middleware-factory');
+let fs = require('fs');
+let http = require('http');
+let https = require('https');
+let serve = require('koa-static');
+let cors = require('koa-cors');
+let Pug = require('koa-pug');
+let errorHandlerMiddleware = require('./middlewares/error-handler');
+let methodOverride = require('koa-methodoverride');
+let HookMiddlewareFactory = require('./middlewares/hook');
+let bodyparser = require('koa-bodyparser');
+let requestId = require('koa-requestid');
+let ssl = require('koa-ssl');
+let SecurityMiddlewareFactory = require('../lib/security-middleware-factory');
 
 
-var App = function(koaApp) {
+let App = function(koaApp) {
   this.koaApp = koaApp;
 };
 
@@ -30,7 +30,7 @@ App.prototype = {
 
   loadControllers: function(path) {
     fs.readdirSync(path).forEach(function(file) {
-      var filePath = path + '/' + file + '/index.js';
+      let filePath = path + '/' + file + '/index.js';
       if (!fs.existsSync(filePath)) {
         return;
       }
@@ -59,7 +59,7 @@ App.prototype = {
 
 
   addDynamicViewMiddleware: function(root, cache) {
-    var pugMiddleware = new Pug({
+    let pugMiddleware = new Pug({
       viewPath: root,
       noCache: !cache
     });
@@ -107,11 +107,11 @@ App.prototype = {
 
 
   listen: function(port, env) {
-    var httpPort = parseInt(port);
+    let httpPort = parseInt(port);
     this._startHTTPServer(httpPort, env);
 
     if (process.env.SERVE_HTTPS === 'true') {
-      var httpsPort = httpPort + 10000;
+      let httpsPort = httpPort + 10000;
       this._startHTTPSServer(httpsPort, env);
     }
   },
@@ -124,7 +124,7 @@ App.prototype = {
 
 
   _startHTTPSServer: function(port, env) {
-    var httpsOptions = {};
+    let httpsOptions = {};
     if (process.env.HTTPS_KEY && process.env.HTTPS_CERT) {
       httpsOptions.key = fs.readFileSync(process.env.HTTPS_KEY);
       httpsOptions.cert = fs.readFileSync(process.env.HTTPS_CERT);

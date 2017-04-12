@@ -1,7 +1,7 @@
 'use strict';
 
-var expect = require('chai').expect;
-var errorHandler = require('./error-handler');
+let expect = require('chai').expect;
+let errorHandler = require('./error-handler');
 
 describe('Error Handler Middleware', function() {
 
@@ -32,7 +32,7 @@ describe('Error Handler Middleware', function() {
   });
 
   it('should render error page if specified', function* () {
-    var middleware = errorHandler(ERROR_PAGE_PATH);
+    let middleware = errorHandler(ERROR_PAGE_PATH);
 
     yield middleware.call(fakeContext, nextError);
 
@@ -41,7 +41,7 @@ describe('Error Handler Middleware', function() {
   });
 
   it('should render error to request body if no error page path specified', function* () {
-    var middleware = errorHandler();
+    let middleware = errorHandler();
 
     yield middleware.call(fakeContext, nextError);
 

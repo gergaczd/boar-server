@@ -1,10 +1,10 @@
 'use strict';
 
-var logger = require('logentries-logformat')('app');
+let logger = require('logentries-logformat')('app');
 
-var errorPagePath;
+let errorPagePath;
 
-var renderError = function(context, message) {
+let renderError = function(context, message) {
   if (context.is('application/json')) {
     context.body = { error: true, message: message };
   } else if (errorPagePath) {

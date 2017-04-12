@@ -1,16 +1,16 @@
 'use strict';
 
-var expect = require('chai').expect;
-var hook = require('./hook');
+let expect = require('chai').expect;
+let hook = require('./hook');
 
 describe('Hook Middleware', function() {
 
   describe('#getMiddleware', function() {
 
     it('should call next', function* () {
-      var middleware = hook.getMiddleware();
-      var called = false;
-      var next = function* () { called = true; };
+      let middleware = hook.getMiddleware();
+      let called = false;
+      let next = function* () { called = true; };
 
       yield middleware(next);
 
@@ -19,9 +19,9 @@ describe('Hook Middleware', function() {
 
 
     it('should call the given hook', function* () {
-      var middleware = hook.getMiddleware();
-      var called = false;
-      var hookSpy = function () { called = true; };
+      let middleware = hook.getMiddleware();
+      let called = false;
+      let hookSpy = function () { called = true; };
 
       hook.add(hookSpy);
       yield middleware(function* () {});
@@ -31,11 +31,11 @@ describe('Hook Middleware', function() {
 
 
     it('should call the hooks in the given order before next', function* () {
-      var middleware = hook.getMiddleware();
-      var called = [];
-      var next = function* () { called.push('next'); };
-      var hookSpy1 = function() { called.push('hookSpy1'); };
-      var hookSpy2 = function() { called.push('hookSpy2'); };
+      let middleware = hook.getMiddleware();
+      let called = [];
+      let next = function* () { called.push('next'); };
+      let hookSpy1 = function() { called.push('hookSpy1'); };
+      let hookSpy2 = function() { called.push('hookSpy2'); };
 
       hook.add(hookSpy1);
       hook.add(hookSpy2);
@@ -46,10 +46,10 @@ describe('Hook Middleware', function() {
 
 
     it('should call the given hook in the context of the middleware', function* () {
-      var context = {};
-      var middleware = hook.getMiddleware();
-      var calledwith = null;
-      var hookSpy = function() { calledwith = this; };
+      let context = {};
+      let middleware = hook.getMiddleware();
+      let calledwith = null;
+      let hookSpy = function() { calledwith = this; };
 
       hook.add(hookSpy);
       yield middleware.call(context, function* () {});
@@ -62,9 +62,9 @@ describe('Hook Middleware', function() {
   describe('#reset', function() {
 
     it('should remove all the hooks', function* () {
-      var middleware = hook.getMiddleware();
-      var called = false;
-      var hookSpy = function () { called = true; };
+      let middleware = hook.getMiddleware();
+      let called = false;
+      let hookSpy = function () { called = true; };
 
       hook.add(hookSpy);
       hook.reset();
