@@ -6,12 +6,12 @@ let hooks = [];
 module.exports = {
 
   getMiddleware: function() {
-    return function* (next) {
+    return async function(next) {
       hooks.forEach(function(hook) {
         hook.call(this);
       }, this);
 
-      yield next;
+      await next();
     }
   },
 
