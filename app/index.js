@@ -15,20 +15,18 @@ let ssl = require('koa-ssl');
 let SecurityMiddlewareFactory = require('../lib/security-middleware-factory');
 
 
-let App = function(koaApp) {
-  this.koaApp = koaApp;
-};
+class App {
+  constructor(koaApp) {
+    this.koaApp = koaApp;
+  }
 
-App.prototype = {
-
-  addCorsSupportMiddleware: function() {
+  addCorsSupportMiddleware() {
     this.addMiddleware(cors({
       origin: '*'
     }));
-  },
+  }
 
-
-  loadControllers: function(path) {
+  loadControllers(path) {
     fs.readdirSync(path).forEach(function(file) {
       let filePath = path + '/' + file + '/index.js';
       if (!fs.existsSync(filePath)) {
@@ -36,77 +34,65 @@ App.prototype = {
       }
       require(filePath)(this.koaApp);
     }.bind(this));
-  },
+  }
 
-
-  loadModels: function(path) {
+  loadModels(path) {
     fs.readdirSync(path).forEach(function(file) {
       if (/(.*)\.(js$)/.test(file) && !/(.*)\.(spec.js$)/.test(file)) {
         require(path + '/' + file);
       }
     }.bind(this));
-  },
+  }
 
-
-  addMiddleware: function(middleware) {
+  addMiddleware(middleware) {
     this.koaApp.use(middleware);
-  },
+  }
 
-
-  addStaticContentMiddleware: function(path) {
+  addStaticContentMiddleware(path) {
     this.addMiddleware(serve(path));
-  },
+  }
 
-
-  addDynamicViewMiddleware: function(root, cache) {
+  addDynamicViewMiddleware(root, cache) {
     let pugMiddleware = new Pug({
       viewPath: root,
       noCache: !cache
     });
 
     pugMiddleware.use(this.koaApp);
-  },
+  }
 
-
-  addHookMiddleware: function() {
+  addHookMiddleware() {
     this.addMiddleware(HookMiddlewareFactory.getMiddleware());
-  },
+  }
 
-
-  addMethodOverrideMiddleware: function(fieldName) {
+  addMethodOverrideMiddleware(fieldName) {
     this.addMiddleware(methodOverride(fieldName));
-  },
+  }
 
-
-  addErrorHandlerMiddleware: function(renderPath) {
+  addErrorHandlerMiddleware(renderPath) {
     this.addMiddleware(errorHandlerMiddleware(renderPath));
-  },
+  }
 
-
-  addBodyParseMiddleware: function(options) {
+  addBodyParseMiddleware(options) {
     this.addMiddleware(bodyparser(options));
-  },
+  }
 
-
-  addRequestIdMiddleware: function(options) {
+  addRequestIdMiddleware(options) {
     options = options || { expose: 'x-request-id', header: 'x-request-id', query: 'x-request-id' };
     this.addMiddleware(requestId(options));
-  },
+  }
 
-
-  addSecurityMiddlewares: function(options) {
+  addSecurityMiddlewares(options) {
     new SecurityMiddlewareFactory(options)
       .getMiddlewares()
       .forEach(this.addMiddleware, this);
-  },
+  }
 
-
-  addEnforceSSLMiddleware: function(options) {
+  addEnforceSSLMiddleware(options) {
     this.addMiddleware(ssl(options));
-  },
+  }
 
-
-  listen: function(port, env) {
+  listen(port, env) {
     let httpPort = parseInt(port);
     this._startHTTPServer(httpPort, env);
 
@@ -114,16 +100,14 @@ App.prototype = {
       let httpsPort = httpPort + 10000;
       this._startHTTPSServer(httpsPort, env);
     }
-  },
+  }
 
-
-  _startHTTPServer: function(port, env) {
+  _startHTTPServer(port, env) {
     http.createServer(this.koaApp.callback()).listen(port);
     console.log('Application started:', { port: port, env: env });
-  },
+  }
 
-
-  _startHTTPSServer: function(port, env) {
+  _startHTTPSServer(port, env) {
     let httpsOptions = {};
     if (process.env.HTTPS_KEY && process.env.HTTPS_CERT) {
       httpsOptions.key = fs.readFileSync(process.env.HTTPS_KEY);
@@ -133,7 +117,6 @@ App.prototype = {
     https.createServer(httpsOptions, this.koaApp.callback()).listen(port);
     console.log('Application started (with SSL):', { port: port, env: env });
   }
-
-};
+}
 
 module.exports = App;
