@@ -17,9 +17,9 @@ let renderError = function(context, message) {
 module.exports = function(errorPage) {
   errorPagePath = errorPage;
 
-  return function* (next) {
+  return async function(next) {
     try {
-      yield next;
+      await next();
     } catch (ex) {
       if (ex.code === 401) {
         this.status = 401;

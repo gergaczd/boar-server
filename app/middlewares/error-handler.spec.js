@@ -9,7 +9,7 @@ describe('Error Handler Middleware', function() {
   const ERROR_PAGE_PATH = 'path/to/error/page';
 
   let fakeContext;
-  let nextError = function* () { throw new Error() };
+  let nextError = async function() { throw new Error() };
 
   beforeEach(function() {
     fakeContext = {
@@ -31,19 +31,19 @@ describe('Error Handler Middleware', function() {
     }
   });
 
-  it('should render error page if specified', function* () {
+  it('should render error page if specified', async function() {
     let middleware = errorHandler(ERROR_PAGE_PATH);
 
-    yield middleware.call(fakeContext, nextError);
+    await middleware.call(fakeContext, nextError);
 
     expect(fakeContext.renderArgs.path).to.eql(ERROR_PAGE_PATH);
     expect(fakeContext.renderArgs.data).to.eql({ message: DEFAULT_ERROR_MESSAGE });
   });
 
-  it('should render error to request body if no error page path specified', function* () {
+  it('should render error to request body if no error page path specified', async function() {
     let middleware = errorHandler();
 
-    yield middleware.call(fakeContext, nextError);
+    await middleware.call(fakeContext, nextError);
 
     expect(fakeContext.body).to.eql(DEFAULT_ERROR_MESSAGE);
   });
