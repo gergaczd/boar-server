@@ -4,44 +4,23 @@
 
 put these lines in your server.js
 ``` javascript
-  var koa = require('koa');
-  var path = require('path');
-  var koaApp = module.exports = koa();
-  var config = require('./config');
-  var App = require('boar-server').app;
+  let koa = require('koa');
+  let path = require('path');
+  let koaApp = module.exports = koa();
+  let config = require('./config');
+  let App = require('boar-server').app;
 
-  var app = new App(koaApp);
-  app.connectToMongoose(config.mongooseUri);
-  app.addDynamicViewMiddleware(path.join(config.root, '/views'), config.env === 'development');
-  app.addStaticContentMiddleware(path.join(config.root, '/assets'));
-  app.addHookMiddleware();
+  let app = new App(koaApp);
   app.loadControllers(path.join(config.root, 'controllers'));
-  app.loadModels(path.join(config.root, 'models'));
 
   if (!module.parent) { app.listen(config.port); }
 ```
 
 ## Add middleware for your app
 ``` javascript
-  var cors = require('koa-cors');
-  var app = new App(koaApp);
+  let cors = require('koa-cors');
+  let app = new App(koaApp);
   app.addMiddleware(cors());
-```
-
-## HTTPS support
-To enable HTTPS support, simple create `SERVE_HTTPS` environment variable with value `true`.
-The port for https will be the port of the application increased with 10000 (10k).
-
-If you want to serve the requests with your own SSL certification, create `HTTPS_KEY` and `HTTPS_CERT`
-environment variables with path of the files as values.
-
-### Example
-```
-export SERVE_HTTPS=true
-export HTTPS_KEY="path/to/cert.key"
-export HTTPS_CERT="path/to/cert.crt"
-
-node server.js
 ```
 
 ## Build-in Middlewares
@@ -52,42 +31,10 @@ node server.js
   app.addCorsSupportMiddleware();
 ```
 
-### Static Content ([koa-static](https://github.com/koajs/static))
-
-| Param | Type  | Description |
-| ----- | ----- | ----------- |
-| __path__ | `String` | Path to the static content's folder |
-
-``` javascript
-  app.addStaticContentMiddleware(path);
-```
-
-### Dynamic View
-
-This middleware is a wrapper for [koa-pug](https://github.com/chrisyip/koa-pug).
-
-| Param | Type  | Description |
-| ----- | ----- | ----------- |
-| __path__ | `String` | Path to the pug files |
-
-``` javascript
-  app.addDynamicViewMiddleware(path);
-```
-
 ### Method Override ([koa-methodoverwrite](https://github.com/koa-modules/methodoverride))
 
 ``` javascript
   app.addMethodOverrideMiddleware();
-```
-
-### Error Handler
-
-| Param | Type  | Description |
-| ----- | ----- | ----------- |
-| __path__ | `String` | Path to error page pug template |
-
-``` javascript
-  app.addErrorHandlerMiddleware(path);
 ```
 
 ### Body Parse ([koa-bodyparser](https://github.com/koajs/body-parser))
@@ -126,18 +73,11 @@ This middleware is a wrapper for [koa-pug](https://github.com/chrisyip/koa-pug).
 If your application is running behind reverse proxy (like Heroku) you should set the trustProxy configuration option to *true* in order to process the x-forwarded-proto header.
 
 ``` javascript
-  var app = new App(koaApp);
+  let app = new App(koaApp);
   app.addEnforceSSLMiddleware({ trustProxy: true });
 ```
 
 __Note__: if you use this middleware EnforceSSL middleware should be the first you add.
-
-
-### Hook
-
-``` javascript
-  app.addHookMiddleware();
-```
 
 ### Security
 Provides middlewares for setting up various security related HTTP headers.
@@ -181,18 +121,6 @@ Provides middlewares for setting up various security related HTTP headers.
 
 ## Libraries
 
-### Mask email address
-``` javascript
-  var maskEmailAddress = require('boar-server').lib.maskEmailAddress;
-  maskEmailAddress('test@gmail.com');
-```
-
-### Real ip address (in heroku)
-``` javascript
-  var realIpAddress = require('boar-server').lib.realIpAddress;
-  realIpAddress(request);
-```
-
 ### ControllerFactory
 ``` javascript
   var ControllerFactory = require('boar-server').lib.controllerFactory;
@@ -204,12 +132,3 @@ Provides middlewares for setting up various security related HTTP headers.
   });
 ```
 
-### ClearCollection
-
-### ClearGridfs
-
-### Database
-
-Wrapper for mongoose connection.
-
-### ExceptionHandler
